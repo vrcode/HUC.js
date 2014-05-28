@@ -1,3 +1,5 @@
+var print;
+
 window.onload = function () {
     "use strict";
     var huc = document.body.appendChild(document.createElement("div"));
@@ -8,6 +10,10 @@ window.onload = function () {
     huc.innerHTML += '<br/>done loading';
     huc.innerHTML += '<br/><br/>&gt;&nbsp;';
     huc.focus();
+
+    print = function (content) {
+        huc.innerHTML += content + "<br/>";
+    }
 
     cursorToEOD();
 
@@ -35,10 +41,17 @@ window.onload = function () {
                     if (cmd == 'clear') {
                         this.innerHTML = '&gt;&nbsp;';
                     } else {
-                        console.log(cmd);
+                        console.log('Cmd: ' + cmd);
                         this.innerHTML += "<br/>";
                         try {
-                            this.innerHTML += eval(cmd);
+                            var result = eval(cmd);
+                            console.log('Result: ' + result + ", type: " + typeof(result));
+                            if (typeof(result) == 'string') {
+                                result = "String: " + result;
+                            }
+                            if (result != undefined) {
+                                this.innerHTML += result;
+                            }
                         } catch (err) {
                             this.innerHTML += err.message;
                         }
@@ -81,15 +94,49 @@ window.onload = function () {
                 cmd += ' ';
                 break;
 
-            case 190:   // Dot (.)
-                cmd += ".";
+            case 188:   // Comma (,) / Less Than (<)
+                if (e.shiftKey) {
+                    cmd += "<";
+                } else {
+                    cmd += ",";
+                }
                 break;
-            case 191:   // Slash (/)
-                cmd += "/";
+            case 190:   // Dot (.) / Greater Than (>)
+                if (e.shiftKey) {
+                    cmd += ">";
+                } else {
+                    cmd += ".";
+                }
                 break;
+
+            case 191:   // Slash (/) / Question Mark (?)
+                if (e.shiftKey) {
+                    cmd += "?";
+                } else {
+                    cmd += "/";
+                }
+                break;
+
+            case 219:   // Left Square Bracket ([) / Left Curly Bracket ({)
+                if (e.shiftKey) {
+                    cmd += '{';
+                } else {
+                    cmd += '[';
+                }
+                break;
+
             case 220:   // Back Slash (\)
                 cmd += "\\";
                 break;
+
+            case 221:   // Right Square Bracket (]) /  Right Curly Bracket (})
+                if (e.shiftKey) {
+                    cmd += '}';
+                } else {
+                    cmd += ']';
+                }
+                break;
+
             case 222:   // Single Quote (')
                 if (e.shiftKey) {
                     cmd += '"';
@@ -111,8 +158,8 @@ window.onload = function () {
         var range = document.createRange();
         var sel = window.getSelection();
         var lastChild = huc.childNodes[huc.childNodes.length - 1];
-        console.log('Children: ' + huc.childNodes.length);
-        console.log('Last Child: ' + lastChild.length);
+//        console.log('Children: ' + huc.childNodes.length);
+//        console.log('Last Child: ' + lastChild.length);
         range.setStart(lastChild, lastChild.length);
         range.collapse(true);
         sel.removeAllRanges();
