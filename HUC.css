@@ -1,0 +1,21 @@
+.console {
+    position:fixed;
+    padding: 5px;
+    top: 0px;
+    left: 25%;
+    width: 50%;
+    min-width: 300px;
+    height: 260px;
+    background-color: #000;
+    color: #fff;
+    font-family: Consolas;
+    opacity: 0.75;
+    overflow-y: hidden;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: black 0px 0px 50px;
+}
+
+.comment {
+    color: #00ff00;
+}
