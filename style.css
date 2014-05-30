@@ -16,3 +16,9 @@ body {
     font-size: 3em;
     text-align:center;
 }
+
+#home {
+    position:absolute;
+    left:9px;
+    top:9px;
+}
