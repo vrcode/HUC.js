@@ -1,4 +1,4 @@
-HUC.js (version 0.0.1)
+HUC.js (version 0.0.2)
 ======================
 
 A JavaScript Heads Up Console.
