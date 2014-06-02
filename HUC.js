@@ -1,7 +1,6 @@
 var print;
 
 window.onload = function () {
-    "use strict";
     var huc = document.body.appendChild(document.createElement("div"));
     huc.className = 'console';
     huc.contentEditable = true;
@@ -31,7 +30,6 @@ window.onload = function () {
 
         var key = e.keyCode;
         cursorCol = window.getSelection().anchorOffset - 2;
-        console.log(cursorCol);
 
         switch (key) {
             case 8:     // Backspace
@@ -67,7 +65,20 @@ window.onload = function () {
                                 console.log('Result: ' + result + ", type: " + typeof (result));
                                 if (typeof (result) == 'string') {
                                     result = "String: " + result;
+                                } else if (typeof (result) == 'object') {
+                                    var isArray = result instanceof Array;
+                                    var res = isArray ? "[" : "{";
+                                    for (property in result) {
+                                        if (isArray) {
+                                            res += result[property];
+                                        } else {
+                                            res += property + ": " + result[property];
+                                        }
+                                        res += ", "
+                                    }
+                                    result = res.substring(0, res.length-2) + (isArray ? "]" : "}");
                                 }
+
                                 if (result != undefined) {
                                     this.innerHTML += result;
                                 }
