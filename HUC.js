@@ -1,7 +1,6 @@
 var print;
 
 window.onload = function () {
-    "use strict";
     var huc = document.body.appendChild(document.createElement("div"));
     huc.className = 'console';
     huc.contentEditable = true;
@@ -11,7 +10,7 @@ window.onload = function () {
     huc.innerHTML += '<br/>&nbsp;&nbsp;- 1 + 1<br/>';
     huc.innerHTML += '&nbsp;&nbsp;- alert("test")<br/>';
     huc.innerHTML += '&nbsp;&nbsp;- window.a=[]; a.push("test"); a.length;<br/>';
-    huc.innerHTML += '&nbsp;&nbsp;- clear // To clear the console<br/>';
+    huc.innerHTML += '&nbsp;&nbsp;- clear <b style="color:#0a0">// To clear the console</b><br/>';
     huc.innerHTML += '<br/>&gt;&nbsp;';
     huc.focus();
 
@@ -23,26 +22,28 @@ window.onload = function () {
 
 
     var cmd = '';
+    var cmds = [];
+    var cursorCol = 0;
 
 
     huc.onkeydown = function (e) {
 
         var key = e.keyCode;
+        cursorCol = window.getSelection().anchorOffset - 2;
 
         switch (key) {
             case 8:     // Backspace
-
-                if (cmd.length == 0) {
-                    return false;
+                if (cursorCol > 0) {
+                    cmd = cmd.substring(0, cursorCol - 1) + cmd.substring(cursorCol, cmd.length);
                 } else {
-                    cmd = cmd.substring(0, cmd.length - 1);
+                    return false;
                 }
                 break;
 
             case 9:     // Tab
                 e.preventDefault();
                 this.innerHTML += "&nbsp;&nbsp;";
-                cmd += '  ';
+                insertAtCursor('  ');
                 cursorToEndOfDoc();
                 break;
 
@@ -64,7 +65,20 @@ window.onload = function () {
                                 console.log('Result: ' + result + ", type: " + typeof (result));
                                 if (typeof (result) == 'string') {
                                     result = "String: " + result;
+                                } else if (typeof (result) == 'object') {
+                                    var isArray = result instanceof Array;
+                                    var res = isArray ? "[" : "{";
+                                    for (property in result) {
+                                        if (isArray) {
+                                            res += result[property];
+                                        } else {
+                                            res += property + ": " + result[property];
+                                        }
+                                        res += ", "
+                                    }
+                                    result = res.substring(0, res.length-2) + (isArray ? "]" : "}");
                                 }
+
                                 if (result != undefined) {
                                     this.innerHTML += result;
                                 }
@@ -88,7 +102,7 @@ window.onload = function () {
                 break;
 
             case 37:    // Left
-                if (cmd.length == 0) {
+                if (cursorCol < 1) {
                     return false;
                 }
                 break;
@@ -108,67 +122,71 @@ window.onload = function () {
                 break;
 
             case 32:    // Space
-                cmd += ' ';
+                insertAtCursor(' ');
                 break;
 
             case 188:   // Comma (,) / Less Than (<)
                 if (e.shiftKey) {
-                    cmd += "<";
+                    insertAtCursor("<");
                 } else {
-                    cmd += ",";
+                    insertAtCursor(",");
                 }
                 break;
             case 190:   // Dot (.) / Greater Than (>)
                 if (e.shiftKey) {
-                    cmd += ">";
+                    insertAtCursor(">");
                 } else {
-                    cmd += ".";
+                    insertAtCursor(".");
                 }
                 break;
 
             case 191:   // Slash (/) / Question Mark (?)
                 if (e.shiftKey) {
-                    cmd += "?";
+                    insertAtCursor("?");
                 } else {
-                    cmd += "/";
+                    insertAtCursor("/");
                 }
                 break;
 
             case 219:   // Left Square Bracket ([) / Left Curly Bracket ({)
                 if (e.shiftKey) {
-                    cmd += '{';
+                    insertAtCursor("{");
                 } else {
-                    cmd += '[';
+                    insertAtCursor("[");
                 }
                 break;
 
             case 220:   // Back Slash (\)
-                cmd += "\\";
+                insertAtCursor("\\");
                 break;
 
             case 221:   // Right Square Bracket (]) /  Right Curly Bracket (})
                 if (e.shiftKey) {
-                    cmd += '}';
+                    insertAtCursor("}");
                 } else {
-                    cmd += ']';
+                    insertAtCursor("]");
                 }
                 break;
 
             case 222:   // Single Quote (')
                 if (e.shiftKey) {
-                    cmd += '"';
+                    insertAtCursor('"');
                 } else {
-                    cmd += "'";
+                    insertAtCursor("'");
                 }
                 break;
 
             default:
                 if (key > 40 && key <= 127) {
-                    cmd += e.key;
+                    insertAtCursor(e.key);
                 }
                 break;
         }
 
+    }
+
+    function insertAtCursor(chars) {
+        cmd = cmd.substring(0, cursorCol ) + chars + cmd.substring(cursorCol, cmd.length);
     }
 
     function cursorToEndOfDoc() {
