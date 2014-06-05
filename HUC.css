@@ -8,13 +8,16 @@
     height: 260px;
     background-color: #000;
     color: #fff;
-    font-family: Consolas;
+    font-family: Consolas, "Andale Mono", "Courier New";
     opacity: 0.75;
     overflow-y: hidden;
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     box-shadow: black 0px 0px 50px;
 }
+
+[contentEditable]:focus {
+  outline: 0px solid transparent;
 
 .comment {
     color: #00ff00;
